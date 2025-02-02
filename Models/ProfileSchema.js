@@ -23,5 +23,5 @@ const profileSchema = new Schema(
   { timestamps: true }
 );
 
-const Profile = model(profileSchema);
+const Profile = model("Profile", profileSchema);
 module.exports = Profile;

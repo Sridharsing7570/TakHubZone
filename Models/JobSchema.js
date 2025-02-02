@@ -42,5 +42,5 @@ const JobSchema = new Schema(
   { timestamps: true }
 );
 
-const Job = model(JobSchema);
+const Job = model("Job", JobSchema);
 module.exports = Job;

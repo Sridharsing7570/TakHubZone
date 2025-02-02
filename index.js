@@ -10,8 +10,6 @@ connectDB();
 
 app.use(bodyParser.json());
 
-app.use(bodyParser.json());
-
 app.use(
   cors({
     origin: "*",

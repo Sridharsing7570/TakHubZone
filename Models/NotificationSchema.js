@@ -1,5 +1,6 @@
 const { Schema, model } = require("mongoose");
 
+//Notification Schema
 const NotificationSchema = new Schema(
     {
         userId: {

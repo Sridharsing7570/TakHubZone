@@ -1,10 +1,6 @@
 const express = require("express");
+const router = express.Router();
 const passport = require("passport");
 
-const router = express.Router();
-
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
-
-router.get("/google/callback", passport.authenticate("google", { session: false }));
-
-module.exports = router;
+// Google 0Auth Routes
+router.get('/auth/google')

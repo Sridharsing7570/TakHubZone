@@ -10,4 +10,7 @@ router.put("/profile/:id", userController.updateUserProfile);
 router.delete("/:id", userController.deleteUser);
 router.get("/", userController.getAllUsers);
 
+// routes google and facebook auth
+router.use("/", require("./googleAuth"));
+
 module.exports = router;

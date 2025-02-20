@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../Models/UserSchema");
+const logger = require("../Config/logger");
 const secretKey = process.env.JWTsecret;
 
 // register user
@@ -20,9 +21,28 @@ exports.registerUser = async (req, res) => {
       status: "active", // Default status
     });
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (error) {
+
+    let userWithoutPassword = newUser.toObject();
+    delete userWithoutPassword.password;
+
+    const token = jwt.sign(
+      { userId: newUser._id, userType: newUser.userType },
+      secretKey,
+      { expiresIn: "1d" }
+    );
+
+ 
+
     res
+      .status(201)
+      .json({
+        message: "User registered successfully",
+        token,
+        user: userWithoutPassword,
+      });
+  } catch (error) {
+    logger.error(`${error} during register user`);
+    return res
       .status(500)
       .json({ message: "Internal Server error", error: error.message });
   }
@@ -31,10 +51,13 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
+
+    let userWithoutPassword = user.toObject();
+    delete userWithoutPassword.password;
 
     const token = jwt.sign(
       { userId: user._id, userType: user.userType },
@@ -42,10 +65,13 @@ exports.loginUser = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    res
-      .status(200)
-      .json({ message: "Successfully login", token: token, user: user });
+    res.status(200).json({
+      message: "Successfully login",
+      token: token,
+      user: userWithoutPassword,
+    });
   } catch (error) {
+    logger.error(`${error} during login`);
     res.status(500).json({ error: error, message: error.message });
   }
 };

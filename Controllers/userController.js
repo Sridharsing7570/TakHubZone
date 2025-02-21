@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../Models/UserSchema");
 const logger = require("../Config/logger");
+const env = require("../Config/environment");
 const secretKey = process.env.JWTsecret;
 
 // register user
@@ -31,15 +32,11 @@ exports.registerUser = async (req, res) => {
       { expiresIn: "1d" }
     );
 
- 
-
-    res
-      .status(201)
-      .json({
-        message: "User registered successfully",
-        token,
-        user: userWithoutPassword,
-      });
+    res.status(201).json({
+      message: "User registered successfully",
+      token,
+      user: userWithoutPassword,
+    });
   } catch (error) {
     logger.error(`${error} during register user`);
     return res
@@ -83,7 +80,7 @@ exports.getUserProfile = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
     res.status(200).json({ message: "User fetched", user });
   } catch (error) {
-    console.error("Error during get user profile");
+    logger.error(`${error} during get user profile`);
     res.status(500).json({ message: "Internal server error", error: error });
   }
 };
@@ -105,7 +102,7 @@ exports.updateUserProfile = async (req, res) => {
       .status(200)
       .json({ message: "User update successfully", user: updatedUser });
   } catch (error) {
-    console.error("error during update user", error);
+    logger.error(`${error} during update user`);
     return res
       .status(500)
       .json({ message: "Internal server error", error: error });
@@ -124,7 +121,7 @@ exports.deleteUser = async (req, res) => {
 
     return res.status(201).json({ message: "user deleted successfully" });
   } catch (error) {
-    console.error("error usring deleted user", error);
+    logger.error(`${error} usring deleted user`);
     return res
       .status(500)
       .json({ message: "Internal server error", error: error });
@@ -138,9 +135,26 @@ exports.getAllUsers = async (req, res) => {
 
     return res.status(200).json({ message: "User found successfully" });
   } catch (error) {
-    console.error("error during fetch user", error);
+    logger.error(`${error} during fetch user`);
     return res
       .status(500)
       .json({ message: "Internal Server error", error: error });
   }
+};
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const resetToken = jwt.sign({ id: user._id }, secretKey, {
+      expiresIn: "1h",
+    });
+
+    const resetLink = `${env.clientURL}/reset-password/${resetToken}`;
+  } catch (error) {}
 };

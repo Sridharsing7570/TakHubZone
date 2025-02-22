@@ -19,11 +19,9 @@ app.use(
   })
 );
 
-app.use("/api", require("./Routes/index"));
+app.use("/", require("./Routes/index"));
 
-app.get("/", (req, res) => {
-  return res.send(`<h1>This is Taskhubzone developement environment</h1>`);
-});
+
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 const PORT = 8001;

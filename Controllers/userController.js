@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../Models/UserSchema");
 const logger = require("../Config/logger");
 const env = require("../Config/environment");
+const { createProfile, deleteProfile } = require("./profileContoller");
 const secretKey = process.env.JWTsecret;
 
 // register user
@@ -31,6 +32,8 @@ exports.registerUser = async (req, res) => {
       secretKey,
       { expiresIn: "1d" }
     );
+
+    createProfile(newUser._id);
 
     res.status(201).json({
       message: "User registered successfully",
@@ -118,6 +121,8 @@ exports.deleteUser = async (req, res) => {
     if (!deletedUser) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    deleteProfile(userId);
 
     return res.status(201).json({ message: "user deleted successfully" });
   } catch (error) {

@@ -61,3 +61,13 @@ exports.updateProfile = async (req, res) => {
     return res.status(500).json({ message: `Internal server error: ${error}` });
   }
 };
+
+// Delete profile(when user is deleted)
+exports.deleteProfile = async (userId) => {
+  try {
+    await Profile.findOneAndDelete({ userId });
+  } catch (error) {
+    logger.error(`${error} during profile delete`);
+    throw new Error("Error deleting profile");
+  }
+};

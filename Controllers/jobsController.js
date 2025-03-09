@@ -80,6 +80,28 @@ exports.updateJobs = async (req, res) => {
     logger.error(`${error} during updating job`);
     return res
       .status(500)
-      .json({ message: "Internl server error. please try again later." });
+      .json({
+        message: "Internl server error. please try again later.",
+        error,
+      });
+  }
+};
+
+exports.deleteJob = async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+    const deleteJob = await Job.findByIdAndDelete(jobId);
+
+    if (!deleteJob) {
+      return res.status(404).json({ message: "Job not found." });
+    }
+
+    return res.status(200).json({ message: "Job deleted successfully!." });
+  } catch (error) {
+    logger.error(`${error}  during deleting job`);
+    return res.status(500).json({
+      message: "Internal server error. Please try again later",
+      error,
+    });
   }
 };

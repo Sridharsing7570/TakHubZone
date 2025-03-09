@@ -2,33 +2,31 @@ const { Schema, model } = require("mongoose");
 
 // Job Application/ Bid Schema
 const ApplicationSchema = new Schema({
-    jobId: {
-        type: Schema.Types.ObjectId,
-        ref: "Job",
-        required: true,
+  jobId: {
+    type: Schema.Types.ObjectId,
+    ref: "Job",
+    required: true,
+  },
+  workerId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  proposal: {
+    type: {
+      String,
     },
-    applicationId: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-    },
-    proposal: {
-        type: {
-            String,
-        },
-    },
-    bidAmount: {
-        type: Number,
-    },
-    status: {
-        type: String,
-        enum: ["pending", "accepted", "rejected"],
-        default: "pending",
-    },
-    appliedAt: {
-        type: Date,
-        default: Date.now,
-    },
+  },
+
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
+  appliedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Application = model("Application", ApplicationSchema);

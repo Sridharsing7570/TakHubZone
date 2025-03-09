@@ -1,5 +1,5 @@
 const development = {
-  name: "Development",
+  name: "development",
   db: process.env.MONGO_URL_DEV,
   port: process.env.PORT_DEV,
   smtp: {
@@ -19,7 +19,8 @@ const development = {
 };
 
 const production = {
-  name: "Production",
+  name: "production",
+  port: process.env.PORT_PROD,
   db: process.env.MONGO_URL_PROD,
   smtp: {
     service: "gmail",

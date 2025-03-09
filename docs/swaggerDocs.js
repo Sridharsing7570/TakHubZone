@@ -26,7 +26,7 @@ const swaggerOptions = {
     },
     security: [{ BearerAuth: [] }],
   },
-  apis: ["./routes/userRoutes.js"], // Ensure this file contains Swagger comments
+  apis: ["./docs/*.swagger.js"], // Add this path to load Swagger docs
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

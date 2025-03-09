@@ -95,3 +95,5 @@ router.get("/profile/:userId", profileContoller.getProfile);
  */
 
 router.put("/profile/:id", profileContoller.updateProfile);
+
+module.exports = router;

@@ -113,3 +113,5 @@ assignedTo: type: string;
 example: "65f3d9b54b1a2a6d2c78d991";
 
 */
+
+module.exports = router;

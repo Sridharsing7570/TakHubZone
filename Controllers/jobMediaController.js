@@ -1,6 +1,8 @@
 const multer = require("multer");
 const JobMedia = require("../Models/JobMediaSchema");
 const logger = require("../Config/logger");
+const path = require("path");
+const fs = require("fs");
 
 // Multer setup for filepaths
 const storage = multer.diskStorage({
@@ -69,7 +71,18 @@ exports.deletemedia = async (req, res) => {
       return res.status(200).json({ message: "Media not found" });
     }
 
-    return res.status(200).json({ message: "Media deleted successfully" });
+    // Delete file from uplaods folder
+    const filePath = path.resolve(media.filePath);
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        logger.error("Failed to delete file", err);
+        return res
+          .status(500)
+          .json({ message: "Failed to delete file from server" });
+      }
+
+      return res.status(200).json({ message: "Media deleted successfully" });
+    });
   } catch (error) {
     logger.error(`${error} during deleting media`);
     return res

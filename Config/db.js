@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const env=require("./environment")
 
-const MongoDbUrl = process.env.MONGO_URL; // Load from .env
+const MongoDbUrl = env.db; // Load from .env
 const dbName = "taskhubzone"; // Define database name
 
 async function connectDB() {

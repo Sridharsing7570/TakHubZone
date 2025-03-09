@@ -55,7 +55,7 @@ exports.updateProfile = async (req, res) => {
 
     return res
       .status(201)
-      .json({ message: "proofile updated successfully", profile: profile });
+      .json({ message: "profile updated successfully", profile: profile });
   } catch (error) {
     logger.error(`${error} during update profile`);
     return res.status(500).json({ message: `Internal server error: ${error}` });

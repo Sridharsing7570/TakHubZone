@@ -20,7 +20,7 @@ const development = {
 
 const production = {
   name: "Production",
-  db: process.env.PORT_PROD,
+  db: process.env.MONGO_URL_PROD,
   smtp: {
     service: "gmail",
     host: "smtp.gmail.com",
@@ -38,4 +38,4 @@ const production = {
 };
 
 module.exports =
-  process.env.NODE_ENV === "Development" ? development : production;
+  process.env.NODE_ENV === "development" ? development : production;

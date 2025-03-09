@@ -64,3 +64,22 @@ exports.getJobs = async (req, res) => {
       .json({ message: "Internal Server Error. Please try again later." });
   }
 };
+
+exports.updateJobs = async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+    const body = req.body;
+
+    const updatedJob = await Job.findByIdAndUpdate(jobId, body, { new: true });
+
+    if (!updatedJob) {
+      return res.status({ message: "Job not found." });
+    }
+    return res.status(200).json({ message: "Job updated successfully" });
+  } catch (error) {
+    logger.error(`${error} during updating job`);
+    return res
+      .status(500)
+      .json({ message: "Internl server error. please try again later." });
+  }
+};

@@ -2,7 +2,7 @@
  * @swagger
  * tags:
  *   name: Profile
- *   description: User management APIs
+ *   description: Profile management APIs
  */
 
 /**

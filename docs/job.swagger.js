@@ -2,7 +2,7 @@
  * @swagger
  * tags:
  *   name: Job
- *   description: User management APIs
+ *   description: Job management APIs
  */
 
 

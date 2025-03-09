@@ -56,3 +56,56 @@ exports.getApplications = async (req, res) => {
       .json({ message: "Failed to fetch applications. Try again later." });
   }
 };
+
+// update status
+exports.updateApplicationStatus = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const { status } = req.body;
+
+    if (!applicationId) {
+      return res.status(404).json({ message: "ApplicationId required." });
+    }
+
+    const validStatus = ["accepted", "rejected"];
+
+    if (!validStatus.includes(status)) {
+      return res.status(400).json({ message: "Invalid status." });
+    }
+
+    const application = await Application.findById(applicationId);
+
+    if (!application) {
+      return res.status(404).json({ message: "Application not found." });
+    }
+
+    return res
+      .status(200)
+      .json({ message: `Applcation ${status} successfully`, application });
+  } catch (error) {
+    logger.error(`${error} durring updating status`);
+    return res.status(500).json({
+      message: "Failed to update application status. Please try again later.",
+    });
+  }
+};
+
+exports.withdrawApplication = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const application = await Application.findByIdAndDelete(applicationId);
+
+    if (!application) {
+      return res.status(404).json({ message: "Applcation not found" });
+    }
+
+    return res.status.json({ message: "Application withdrawn successfully" });
+  } catch (error) {
+    logger.error(`${error} during withddraw application`);
+    return res
+      .status(500)
+      .json({
+        message: "Failed to withdraw application. Please try again later.",
+      });
+  }
+};

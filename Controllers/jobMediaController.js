@@ -1,18 +1,7 @@
-const multer = require("multer");
 const JobMedia = require("../Models/JobMediaSchema");
 const logger = require("../Config/logger");
 const path = require("path");
 const fs = require("fs");
-
-// Multer setup for filepaths
-const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, res, cb) => {
-    cb(null, `${Date.now()} ${file.originalname}`);
-  },
-});
-
-const upload = multer({ storage });
 
 // Upload Media
 exports.uploadMedia = async (req, res) => {

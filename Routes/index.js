@@ -9,5 +9,6 @@ router.use("/api/user", require("./userRoutes"));
 router.use("/api/profile", require("./ProfileRoutes"));
 router.use("/api/job", require("../Routes/jobRoutes"));
 router.use("/api/applcation", require("../Routes/applicationRoutes"));
+router.use("/api/jobmedia", require("../Routes/jobMediaRoutes"));
 
 module.exports = router;

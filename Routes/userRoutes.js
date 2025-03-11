@@ -3,7 +3,6 @@ const router = express.Router();
 
 const userController = require("../Controllers/userController");
 
-require("../docs/user.swagger");
 
 router.post("/register", userController.registerUser);
 

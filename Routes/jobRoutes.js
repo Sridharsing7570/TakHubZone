@@ -1,7 +1,6 @@
 const { Router } = require("express");
 const router = Router();
 const jobController = require("../Controllers/jobsController");
-require("../docs/job.swagger");
 
 router.post("/create", jobController.createJobs);
 

@@ -88,3 +88,45 @@ exports.handleGetMessages = async (req, res) => {
     return res.status(500).json({ message: "Please try again later" });
   }
 };
+
+exports.handleReadmessage = async (req, res) => {
+  try {
+    const { senderId, receiverId } = req.body;
+
+    if (!senderId || !receiverId) {
+      return res
+        .status(400)
+        .json({ message: "Please provide all required fields" });
+    }
+
+    // Check if the senderId and receiverId are the same
+    if (senderId === receiverId) {
+      return res
+        .status(400)
+        .json({ message: "You can't read messages from yourself" });
+    }
+
+    const [sender, receiver] = await Promise.all([
+      User.findById(senderId),
+      User.findById(receiverId),
+    ]);
+
+    if (!sender || !receiver) {
+      return res
+        .status(400)
+        .json({ message: "Invalid senderId or receiverId" });
+    }
+
+    const data = await Message.updateMany(
+      { senderId: receiverId, receiverId: senderId },
+      { readStatus: true }
+    );
+
+    return res
+      .status(200)
+      .json({ message: "Messages read successfully", data });
+  } catch (error) {
+    logger.error(`${error} during reading messages`);
+    return res.status(500).json({ message: "Please try again later" });
+  }
+};

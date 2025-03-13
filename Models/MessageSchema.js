@@ -1,26 +1,16 @@
 const { Schema, model } = require("mongoose");
 
 const MessageSchema = new Schema(
-    {
-        senderId: {
-            type: Schema.Types.ObjectId,
-            ref: "User",
-            required: true,
-        },
-        receiverId: {
-            type: Schema.Types.ObjectId,
-            ref: "User",
-            required: true,
-        },
-        content: {
-            type: String,
-        },
-        readStatus: {
-            type: Boolean,
-            default: false,
-        },
-    },
-    { timestamps: true }
+  {
+    participants: [
+      { type: Schema.Types.ObjectId, ref: "User", required: true },
+    ],
+    sentBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    content: { type: String, required: true },
+    readStatus: { type: Boolean, default: false },
+    deletedFor: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  },
+  { timestamps: true }
 );
 
 const Message = model("Message", MessageSchema);

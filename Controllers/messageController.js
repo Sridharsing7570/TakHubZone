@@ -32,8 +32,8 @@ exports.handleSendmessage = async (req, res) => {
     }
 
     const newMessage = new Message({
-      senderId,
-      receiverId,
+      participants: senderId,
+      sentBy: receiverId,
       content,
     });
 
@@ -63,26 +63,12 @@ exports.handleGetMessages = async (req, res) => {
         .json({ message: "You can't get messages from yourself" });
     }
 
-    // Check if the senderId and receiverId are valid
-    const [sender, receiver] = await Promise.all([
-      User.findById(senderId),
-      User.findById(receiverId),
-    ]);
-
-    if (!sender || !receiver) {
-      return res
-        .status(400)
-        .json({ message: "Invalid senderId or receiverId" });
-    }
-
-    const messages = await Message.find({
-      $or: [
-        { senderId, receiverId },
-        { senderId: receiverId, receiverId: senderId },
-      ],
+    const message = await Message.find({
+      participants: { $all: [senderId, receiverId] },
+      deletedFor: { $ne: senderId },
     });
 
-    return res.status(200).json({ messages });
+    return res.status(200).json({ message });
   } catch (error) {
     logger.error(`${error} during getting messages`);
     return res.status(500).json({ message: "Please try again later" });
@@ -106,19 +92,11 @@ exports.handleReadmessage = async (req, res) => {
         .json({ message: "You can't read messages from yourself" });
     }
 
-    const [sender, receiver] = await Promise.all([
-      User.findById(senderId),
-      User.findById(receiverId),
-    ]);
-
-    if (!sender || !receiver) {
-      return res
-        .status(400)
-        .json({ message: "Invalid senderId or receiverId" });
-    }
-
     const data = await Message.updateMany(
-      { senderId: receiverId, receiverId: senderId },
+      {
+        participants: { $all: [senderId, receiverId] },
+        sentBy: receiverId,
+      },
       { readStatus: true }
     );
 
@@ -127,6 +105,44 @@ exports.handleReadmessage = async (req, res) => {
       .json({ message: "Messages read successfully", data });
   } catch (error) {
     logger.error(`${error} during reading messages`);
+    return res.status(500).json({ message: "Please try again later" });
+  }
+};
+
+exports.handleDeleteMessage = async (req, res) => {
+  try {
+    const { userId, chartPatnerid, deleteForboth } = req.body;
+
+    if (!userId || !chartPatnerid) {
+      return res
+        .status(400)
+        .json({ message: "Please provide all required fields" });
+    }
+
+    // Check if the senderId and receiverId are the same
+    if (deleteForboth) {
+      const data = await Message.deleteMany({
+        participants: { $all: [userId, chartPatnerid] },
+        sentBy: chartPatnerid,
+      });
+
+      return res
+        .status(200)
+        .json({ message: "Messages deleted successfully", data });
+    }
+
+    // Soft delete the message for one side only
+
+    await Message.updateMany(
+      {
+        participants: { $all: [userId, chartPatnerid] },
+      },
+      { $addToSet: { deletedFor: userId } }
+    );
+
+    return res.status(200).json({ message: "Message deleted successfully" });
+  } catch (error) {
+    logger.error(`${error} during deleting messages`);
     return res.status(500).json({ message: "Please try again later" });
   }
 };

@@ -40,11 +40,34 @@ exports.getReviewByuserId = async (req, res) => {
     return res.status(200).json({ success: true, review });
   } catch (error) {
     logger.error(`${error} during get review`);
+    return res.status(500).json({
+      message: "Internal server error. Please try again later",
+      error,
+    });
+  }
+};
+
+exports.updateReview = async (req, res) => {
+  const { reviewId } = req.params;
+  const { rating, reviewText } = req.body;
+
+  try {
+    const review = await Review.findOneAndUpdate(
+      { _id: reviewId, reviewerId: req.user._id },
+      { rating, reviewText },
+      { new: true }
+    );
+
+    if (!review)
+      return res
+        .status(200)
+        .json({ success: false, message: "Review not found or unauthorised" });
+
+    return res.status(200).json({ message: "Review updated successfully" });
+  } catch (error) {
+    logger.error(`${error} during updating review`);
     return res
       .status(500)
-      .json({
-        message: "Internal server error. Please try again later",
-        error,
-      });
+      .json({ message: "Internal server error. Please try again later" });
   }
 };

@@ -71,3 +71,18 @@ exports.updateReview = async (req, res) => {
       .json({ message: "Internal server error. Please try again later" });
   }
 };
+
+// Delete review (admin only)
+exports.deleteReview = async (req, res) => {
+  const reviewId = req.params;
+  try {
+    await Review.findByIdAndDelete(reviewId);
+
+    return res.status(200).json({ message: "Review deleted successfully" });
+  } catch (error) {
+    logger.error(`${error} during deleting review`);
+    return res
+      .status(500)
+      .json({ message: "Internal server error. Please try again.", error });
+  }
+};

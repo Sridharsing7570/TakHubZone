@@ -12,5 +12,6 @@ router.use("/api/applcation", require("../Routes/applicationRoutes"));
 router.use("/api/jobmedia", require("../Routes/jobMediaRoutes"));
 router.use("/api/message", require("../Routes/messageRoute"));
 router.use("/api/notifications", require("../Routes/notificationRoutes"));
+router.use("/api/review", require("../Routes/reviewRoutes"));
 
 module.exports = router;

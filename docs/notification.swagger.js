@@ -24,7 +24,7 @@
 
 /**
  * @swagger
- * /notifications/create:
+ * /api/notifications/create:
  *   post:
  *     summary: Create a new notification
  *     tags: [Notifications]
@@ -43,7 +43,7 @@
 
 /**
  * @swagger
- * /notifications/get:
+ * /api/notifications/get:
  *   get:
  *     summary: Get all notifications
  *     tags: [Notifications]
@@ -60,7 +60,7 @@
 
 /**
  * @swagger
- * /notifications/update:
+ * /api/notifications/update:
  *   put:
  *     summary: Update a notification
  *     tags: [Notifications]
@@ -86,7 +86,7 @@
 
 /**
  * @swagger
- * /notifications/clear:
+ * /api/notifications/clear:
  *   delete:
  *     summary: Clear all notifications
  *     tags: [Notifications]

@@ -67,3 +67,22 @@ exports.updateNotification = async (req, res) => {
       .json({ success: false, message: "Error updating notiification", error });
   }
 };
+
+// Clear old notifications or delete notifications
+exports.clearNotifications = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const notification = await Notification.findByIdAndDelete(id);
+
+    if (!notification) {
+      return res.status(404).json({ message: "Notication not found" });
+    }
+    return res.status(200).json({ message: "Message deleted successfully" });
+  } catch (error) {
+    logger.error(`${error} during clear notifications`);
+    return res.status(500).json({
+      message: "Internal server error. Please try again later.",
+      error,
+    });
+  }
+};

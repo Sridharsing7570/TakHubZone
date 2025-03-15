@@ -40,3 +40,30 @@ exports.getNotifications = async (req, res) => {
     });
   }
 };
+
+exports.updateNotification = async (req, res) => {
+  const { id } = req.params;
+  const { isRead } = req.body;
+  try {
+    const notification = await Notification.findByIdAndUpdate(
+      id,
+      { isRead },
+      { new: true }
+    );
+
+    if (!notification) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Notification not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Notification update successfully" });
+  } catch (error) {
+    logger.error(`${error} to update notifications`);
+    return res
+      .status(500)
+      .json({ success: false, message: "Error updating notiification", error });
+  }
+};

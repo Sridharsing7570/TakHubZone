@@ -76,3 +76,26 @@ exports.handleCommission = async (req, res) => {
       .json({ message: "Failed to calculate commission", error });
   }
 };
+
+// Dispute management
+exports.raiseDispute = async (req, res) => {
+  const { paymentId, reason } = req.body;
+
+  try {
+    const payment = await Payment.findById(paymentId);
+
+    if (!payment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "payment not found" });
+    }
+
+    // add logic to handle dispute resolution (e.g., admin review)
+    return res
+      .status(200)
+      .json({ success: true, message: "Dispute raised successfully" });
+  } catch (error) {
+    logger.error(`${error} during raised dispute`);
+    return res.status(500).json({ message: "Failed to raise dispute.", error });
+  }
+};

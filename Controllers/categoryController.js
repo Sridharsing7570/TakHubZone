@@ -35,3 +35,31 @@ exports.getCategories = async (req, res) => {
       .json({ message: "Internal server error. Please try again later" });
   }
 };
+
+// Update Category
+exports.upddateCategories = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateCategory = await CategorySchema.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true }
+    );
+
+    if (!updateCategory) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    return res
+      .status(201)
+      .json({ success: true, message: "Category updated successfully" });
+  } catch (error) {
+    logger.error(`${error} during updating category`);
+    return res
+      .status(500)
+      .json({
+        message: "Internal server error. Please try again later",
+        error,
+      });
+  }
+};

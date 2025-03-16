@@ -18,3 +18,26 @@ exports.initiatePayment = async (req, res) => {
       .json({ message: "Internal server error. Please try again", error });
   }
 };
+
+// Track payment
+exports.trackPayment = async (req, res) => {
+  const { paymentId } = req.params;
+  try {
+    const payment = await Payment.findById(paymentId).populate(
+      "payerId payeeId jobId"
+    );
+
+    if (!payment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Payment not found." });
+    }
+
+    return res.status(200).json({ success: true, payment });
+  } catch (error) {
+    logger.error(`${error} during track payemnt`);
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to track payment", error });
+  }
+};

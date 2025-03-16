@@ -14,5 +14,6 @@ router.use("/api/message", require("../Routes/messageRoute"));
 router.use("/api/notifications", require("../Routes/notificationRoutes"));
 router.use("/api/review", require("../Routes/reviewRoutes"));
 router.use("/api/payment", require("../Routes/paymentRoutes"));
+router.use("/api/categories", require("../Routes/categoryRoutes"));
 
 module.exports = router;

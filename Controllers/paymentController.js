@@ -41,3 +41,38 @@ exports.trackPayment = async (req, res) => {
       .json({ success: false, message: "Failed to track payment", error });
   }
 };
+
+// Handle commission
+exports.handleCommission = async (req, res) => {
+  const { paymentId } = req.params;
+  const commissionRate = 0.1; // 10% platformm commission
+
+  try {
+    const payment = await Payment.findById(paymentId);
+
+    if (!payment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Payment not found." });
+    }
+
+    const commission = payment.amount * commissionRate;
+    const finalAmount = payment.amount - commission;
+
+    payment.amount = finalAmount;
+
+    await payment.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Commission calculated successfully",
+      commission,
+      finalAmount,
+    });
+  } catch (error) {
+    logger.error(`${error} get during calculate commission`);
+    return res
+      .status(500)
+      .json({ message: "Failed to calculate commission", error });
+  }
+};
